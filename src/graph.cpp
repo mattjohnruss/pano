@@ -1,5 +1,7 @@
 #include <graph.h>
 
+#include <iostream>
+
 namespace Pano
 {
     Graph::Graph()

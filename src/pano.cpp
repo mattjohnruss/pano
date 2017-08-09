@@ -52,7 +52,10 @@ int main()
     // define the viewport dimensions
     glViewport(0, 0, window_width, window_height);
 
-    Pano::Graph
+    Pano::Graph g;
+    g.add_node();
+    g.add_node();
+    g.add_node();
 
     while(!glfwWindowShouldClose(window))
     {

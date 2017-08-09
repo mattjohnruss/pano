@@ -2,6 +2,9 @@
 
 #include <node.h>
 
+#include <utility>
+#include <vector>
+
 namespace Pano
 {
     typedef std::pair<Node*,Node*> Edge;

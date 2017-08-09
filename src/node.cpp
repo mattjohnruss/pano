@@ -1,4 +1,7 @@
 #include <node.h>
+#include <pano_image.h>
+
+#include <iostream>
 
 namespace Pano
 {

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <pano_image.h>
+
 namespace Pano
 {
     class Node
