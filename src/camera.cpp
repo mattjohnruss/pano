@@ -88,3 +88,13 @@ const GLfloat &Camera::fov() const
 {
     return fov_;
 }
+
+const glm::vec3 &Camera::position() const
+{
+    return pos_;
+}
+
+const glm::vec3 &Camera::front() const
+{
+    return front_;
+}

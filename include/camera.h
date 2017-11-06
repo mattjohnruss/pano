@@ -1,5 +1,4 @@
-#ifndef CAMERA_H_
-#define CAMERA_H_
+#pragma once
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -40,7 +39,7 @@ public:
     Camera(glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f),
            glm::vec3 up  = glm::vec3(0.0f, 1.0f, 0.0f),
            GLfloat yaw   = -90.0f,
-           GLfloat pitch = 3.0f);
+           GLfloat pitch = 0.0f);
 
     ~Camera()
     {
@@ -55,6 +54,6 @@ public:
     void process_mouse_scroll(const GLfloat y_offset);
 
     const GLfloat &fov() const;
+    const glm::vec3 &position() const;
+    const glm::vec3 &front() const;
 };
-
-#endif // CAMERA_H_
