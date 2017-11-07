@@ -23,26 +23,9 @@ namespace Movement
     // camera
     Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 
-    //glm::vec3 camera_pos   = glm::vec3(0.0f,  0.0f,  3.0f);
-    //glm::vec3 camera_front = glm::vec3(0.0f,  0.0f, -1.0f);
-    //glm::vec3 camera_up    = glm::vec3(0.0f,  1.0f,  0.0f);
-
-    //GLfloat yaw   = -90.0f;
-    //GLfloat pitch =  0.0f;
-
-    //GLfloat fov   = 45.0f;
-
-    //const GLfloat camera_speed_base = 1.0f;
-    //GLfloat       camera_speed      = 0.0f;
-
     // mouse
     GLfloat previous_x = 0.0f;
     GLfloat previous_y = 0.0f;
-
-    //GLfloat x_offset = 0.0f;
-    //GLfloat y_offset = 0.0f;
-
-    //GLfloat mouse_sensitivity = 0.05f;
 
     bool first_mouse = true;
 
@@ -133,8 +116,14 @@ int main()
         glm::vec3(-1.3f,  1.0f, -1.5f)
     };
 
-    // light position
-    //glm::vec3 light_position(1.2f, 1.0f, 2.0f);
+    // point light positions
+    glm::vec3 point_light_positions[] =
+    {
+        glm::vec3( 0.7f,  0.2f,  2.0f),
+        glm::vec3( 2.3f, -3.3f, -4.0f),
+        glm::vec3(-4.0f,  2.0f, -12.0f),
+        glm::vec3( 0.0f,  0.0f, -3.0f)
+    };
 
     // set up context
     ////////////////////////////////////////////////////////////////////////////
@@ -221,7 +210,7 @@ int main()
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8*sizeof(GLfloat), (GLvoid*)(6*sizeof(GLfloat)));
     glEnableVertexAttribArray(2);
 
-    // Lamp - declare handle, generate 1 VAO and assign ID to handle
+    // lamp - declare handle, generate 1 VAO and assign ID to handle
     GLuint lamp_VAO;
     glGenVertexArrays(1, &lamp_VAO);
 
@@ -272,9 +261,6 @@ int main()
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        //light_position.x = 1.2f + std::sin(glfwGetTime())*2.0f;
-        //light_position.y = 1.0f + std::sin(glfwGetTime()/2.0f);
-
         // calculate the projection matrix
         proj_mat = glm::perspective(radians(Movement::camera.fov()),
                 static_cast<float>(window_width)/static_cast<float>(window_height),
@@ -283,47 +269,58 @@ int main()
         // get the view matrix from the camera
         Movement::camera.view_mat(view_mat);
 
-        //// idenitiy model matrix
+        // idenitiy model matrix
         glm::mat4 model_mat(1.0f);
-
-        // normal matrix
-        //glm::mat3 normal_mat(glm::transpose(glm::inverse(model_mat)));
 
         // use the light shader and set uniforms
         lighting_shader.use();
-        //lighting_shader.set_vec3("light.position", light_position);
-        lighting_shader.set_vec3("light.position", Movement::camera.position());
-        lighting_shader.set_vec3("light.direction", Movement::camera.front());
-        lighting_shader.set_float("light.cos_cutoff", glm::cos(radians(15.0f)));
-        lighting_shader.set_float("light.cos_outer_cutoff", glm::cos(radians(15.5f)));
 
-        // send the projection, view and model matrices to the light shader as uniforms
+        // directional light
+        // -----------------
+        lighting_shader.set_vec3("directional_light.direction", -0.2f, -1.0f, -0.3f);
+        lighting_shader.set_vec3("directional_light.ambient", 0.05f);
+        lighting_shader.set_vec3("directional_light.diffuse", 0.2f);
+        lighting_shader.set_vec3("directional_light.specular", 0.25f);
+
+        // point lights
+        // ------------
+        for(unsigned i = 0; i < 4; ++i)
+        {
+            std::string i_str = std::to_string(i);
+
+            lighting_shader.set_vec3(("point_light[" + i_str + "].position").c_str(), point_light_positions[i]);
+            lighting_shader.set_vec3(("point_light[" + i_str + "].ambient").c_str(), 0.05f);
+            lighting_shader.set_vec3(("point_light[" + i_str + "].diffuse").c_str(), 0.8f);
+            lighting_shader.set_vec3(("point_light[" + i_str + "].specular").c_str(), 1.0f);
+            lighting_shader.set_float(("point_light[" + i_str + "].k_c").c_str(), 1.0f);
+            lighting_shader.set_float(("point_light[" + i_str + "].k_l").c_str(), 0.09f);
+            lighting_shader.set_float(("point_light[" + i_str + "].k_q").c_str(), 0.032f);
+        }
+
+        // spotlight
+        // --------------
+        lighting_shader.set_vec3("spotlight.position", Movement::camera.position());
+        lighting_shader.set_vec3("spotlight.direction", Movement::camera.front());
+        lighting_shader.set_float("spotlight.cos_cutoff", glm::cos(radians(15.0f)));
+        lighting_shader.set_float("spotlight.cos_outer_cutoff", glm::cos(radians(15.5f)));
+        lighting_shader.set_vec3("spotlight.ambient", 0.0f);
+        lighting_shader.set_vec3("spotlight.diffuse", 1.0f);
+        lighting_shader.set_vec3("spotlight.specular", 1.0f);
+        lighting_shader.set_float("spotlight.k_c", 1.0f);
+        lighting_shader.set_float("spotlight.k_l", 0.09f);
+        lighting_shader.set_float("spotlight.k_q", 0.032f);
+
+        // transformation matrices
+        // -----------------------
         lighting_shader.set_mat4("proj_mat", proj_mat);
         lighting_shader.set_mat4("view_mat", view_mat);
-        //lighting_shader.set_mat4("model_mat", model_mat);
-        //lighting_shader.set_mat3("normal_mat", normal_mat);
         lighting_shader.set_vec3("view_position", Movement::camera.position());
 
-        // send the material properties to the shader as uniforms
+        // material properties
+        // -------------------
         lighting_shader.set_float("material.shininess", 32.0f);
-
-        // send the texture locations to the shader as uniforms
         lighting_shader.set_int("material.diffuse", 0);
         lighting_shader.set_int("material.specular", 1);
-
-        lighting_shader.set_float("light.k_c", 1.0f);
-        lighting_shader.set_float("light.k_l", 0.09f);
-        lighting_shader.set_float("light.k_q", 0.032f);
-
-        // light properties
-        glm::vec3 ambient_colour{0.1f, 0.1f, 0.1f};
-        glm::vec3 diffuse_colour{1.0f, 1.0f, 1.0f};
-        glm::vec3 specular_colour{1.0f, 1.0f, 1.0f};
-
-        // send the light properties to the shader as uniforms
-        lighting_shader.set_vec3("light.ambient", ambient_colour);
-        lighting_shader.set_vec3("light.diffuse", diffuse_colour);
-        lighting_shader.set_vec3("light.specular", specular_colour);
 
         // bind the diffuse and specular map textures with the appropriate locations
         diffuse_map.use(GL_TEXTURE0);
@@ -332,6 +329,7 @@ int main()
         // render cubes
         glBindVertexArray(cube_VAO);
 
+        // loop over cubes
         for(unsigned c = 0; c < 10; ++c)
         {
             // set the model matrix corresponding to the current cube's position
@@ -341,6 +339,7 @@ int main()
             // rotate the current cube a bit, update the model matrix and send as uniform
             float angle = c*20.0f;
             model_mat = glm::rotate(model_mat, radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+            // set the model matrix uniform for the current cube
             lighting_shader.set_mat4("model_mat", model_mat);
 
             // calculate the normal matrix and send as a uniform
@@ -351,23 +350,31 @@ int main()
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 
-        //// use the lamp shader
-        //lamp_shader.use();
+        // draw point lights as lamps
+        // --------------------------
 
-        //// set the model matrix using the lamp's position and scale
-        //model_mat = glm::mat4(1.0f);
-        //model_mat = glm::translate(model_mat, light_position);
-        //model_mat = glm::scale(model_mat, glm::vec3(0.2f));
+        // use the lamp shader
+        lamp_shader.use();
 
-        //// send the projection, view, model and normal matrices to the lamp
-        //// shader as uniforms
-        //lamp_shader.set_mat4("proj_mat", proj_mat);
-        //lamp_shader.set_mat4("view_mat", view_mat);
-        //lamp_shader.set_mat4("model_mat", model_mat);
+        // set the projection and view matrix uniforms
+        lamp_shader.set_mat4("proj_mat", proj_mat);
+        lamp_shader.set_mat4("view_mat", view_mat);
 
-        //// render lamp
-        //glBindVertexArray(lamp_VAO);
-        //glDrawArrays(GL_TRIANGLES, 0, 36);
+        // loop over the point lights
+        for(unsigned i = 0; i < 4; ++i)
+        {
+            // set the model matrix using the lamp's position and scale
+            model_mat = glm::mat4(1.0f);
+            model_mat = glm::translate(model_mat, point_light_positions[i]);
+            model_mat = glm::scale(model_mat, glm::vec3(0.1f));
+
+            // set the model matrix uniform
+            lamp_shader.set_mat4("model_mat", model_mat);
+
+            // render lamp
+            glBindVertexArray(lamp_VAO);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
 
         // unbind VAO
         glBindVertexArray(0);
@@ -433,6 +440,7 @@ void mouse_callback(GLFWwindow *window, double x_pos, double y_pos)
     camera.process_mouse_movement(x_offset, y_offset);
 }
 
+// GLFW mouse scroll callback
 void scroll_callback(GLFWwindow *window, double x_offset, double y_offset)
 {
     Movement::camera.process_mouse_scroll(y_offset);
