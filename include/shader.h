@@ -20,10 +20,13 @@ public:
 
     // Vectors
     void set_vec2(const char *name, const glm::vec2 &value) const;
+    void set_vec2(const char *name, const GLfloat &x) const;
     void set_vec2(const char *name, const GLfloat &x, const GLfloat &y) const;
     void set_vec3(const char *name, const glm::vec3 &value) const;
+    void set_vec3(const char *name, const GLfloat &x) const;
     void set_vec3(const char *name, const GLfloat &x, const GLfloat &y, const GLfloat &z) const;
     void set_vec4(const char *name, const glm::vec4 &value) const;
+    void set_vec4(const char *name, const GLfloat &x) const;
     void set_vec4(const char *name, const GLfloat &x, const GLfloat &y, const GLfloat &z, const GLfloat &w);
 
     // Matrices
