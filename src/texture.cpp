@@ -1,15 +1,59 @@
-#include "texture.h"
+#include <texture.h>
 
 // STB_IMAGE_IMPLEMENTATION is defined in image.cpp for faster rebuilds
 #include <stb_image.h>
-#include <iostream>
 
-Texture2D::Texture2D(const char *image_path)
+#include <iostream>
+#include <algorithm>
+
+Texture2D::Texture2D(const char *image_path) : id_(texture_from_file(image_path, ""))
 {
+}
+
+Texture2D::~Texture2D()
+{
+}
+
+void Texture2D::use(GLenum active_texture) const
+{
+    glActiveTexture(active_texture);
+    glBindTexture(GL_TEXTURE_2D, id_);
+}
+
+const GLuint Texture2D::id() const
+{
+    return id_;
+}
+
+GLuint Texture2D::texture_from_file(const char *image_path, const std::string &directory)
+{
+    std::string filename;
+
+    if(directory == "")
+    {
+        filename = std::string(image_path);
+    }
+    else
+    {
+        filename = directory + "/" + std::string(image_path);
+    }
+
+    // replace all occurences of Windows style '\' with '/' in texture path
+    std::replace(filename.begin(), filename.end(), '\\', '/');
+
+    // output the (parsed) texture path
+    std::cout << "Texture2D::texture_from_file - filename = " << filename << '\n';
+
+    // declare the texture handle
+    GLuint id;
+
+    // generate a texture and store the id
+    glGenTextures(1, &id);
+
     // attempt to load image located at image_path into image_data
     int image_width, image_height, n_components;
-    unsigned char *image_data = stbi_load(image_path,
-            &image_width, &image_height, &n_components, 0);
+    unsigned char *image_data =
+        stbi_load(filename.c_str(), &image_width, &image_height, &n_components, 0);
 
     // if the load was successful
     if(image_data != 0)
@@ -30,11 +74,8 @@ Texture2D::Texture2D(const char *image_path)
                 break;
         }
 
-        // generate a texture and store the id in id_
-        glGenTextures(1, &id_);
-
-        // bind the texture at id_
-        glBindTexture(GL_TEXTURE_2D, id_);
+        // bind the texture at id
+        glBindTexture(GL_TEXTURE_2D, id);
 
         // TODO move these parameters into member functions
         // make the texture wrap in both directions
@@ -42,8 +83,10 @@ Texture2D::Texture2D(const char *image_path)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
         // set min and mag filters
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);   
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);   
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);   
 
         // create the texture from the image data
         glTexImage2D(GL_TEXTURE_2D, 0, texture_format, image_width, image_height, 0,
@@ -59,24 +102,12 @@ Texture2D::Texture2D(const char *image_path)
     else
     {
         std::cerr << "ERROR::TEXTURE::STBI_LOAD_FAILED\n";
-        exit(1);
+        //exit(1);
     }
 
     // free the image memory
     stbi_image_free(image_data);
-}
 
-Texture2D::~Texture2D()
-{
-}
-
-void Texture2D::use(GLenum active_texture) const
-{
-    glActiveTexture(active_texture);
-    glBindTexture(GL_TEXTURE_2D, id_);
-}
-
-const GLuint Texture2D::id() const
-{
-    return id_;
+    // return the texture id
+    return id;
 }

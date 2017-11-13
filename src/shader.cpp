@@ -31,34 +31,33 @@ Shader::Shader(const GLchar *vertex_path, const GLchar *fragment_path)
     const GLchar *vertex_source = vertex_source_s.c_str();
     const GLchar *fragment_source = fragment_source_s.c_str();
 
-    GLuint vertex;
-    GLuint fragment;
     GLint success;
-    GLchar infolog[512];
+    const unsigned infolog_size = 512;
+    GLchar infolog[infolog_size];
 
     // vertex shader
-    vertex = glCreateShader(GL_VERTEX_SHADER);
+    GLuint vertex = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex, 1, &vertex_source, NULL);
     glCompileShader(vertex);
     glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
 
     if(!success)
     {
-        glGetShaderInfoLog(vertex, 512, NULL, infolog);
+        glGetShaderInfoLog(vertex, infolog_size, NULL, infolog);
         std::cerr << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
                   << "(in file \"" << vertex_path << "\")\n"
                   << infolog << std::endl;
     }
 
     // fragment shader
-    fragment = glCreateShader(GL_FRAGMENT_SHADER);
+    GLuint fragment = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragment, 1, &fragment_source, NULL);
     glCompileShader(fragment);
     glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
 
     if(!success)
     {
-        glGetShaderInfoLog(fragment, 512, NULL, infolog);
+        glGetShaderInfoLog(fragment, infolog_size, NULL, infolog);
         std::cerr << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n"
                   << "(in file \"" << fragment_path << "\")\n"
                   << infolog << std::endl;
@@ -113,6 +112,11 @@ void Shader::set_bool(const char *name, const GLboolean &value) const
 void Shader::set_int(const char *name, const GLint &value) const
 {
     glUniform1i(glGetUniformLocation(program_, name), value);
+}
+
+void Shader::set_uint(const char *name, const GLuint &value) const
+{
+    glUniform1ui(glGetUniformLocation(program_, name), value);
 }
 
 void Shader::set_float(const char *name, const GLfloat &value) const

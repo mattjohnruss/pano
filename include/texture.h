@@ -2,6 +2,8 @@
 
 #include <glad/glad.h>
 
+#include <string>
+
 class Texture2D
 {
 public:
@@ -11,6 +13,8 @@ public:
     void use(GLenum active_texture) const;
 
     const GLuint id() const;
+
+    static GLuint texture_from_file(const char *image_path, const std::string &directory);
 
 private:
     GLuint id_;

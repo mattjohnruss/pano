@@ -13,31 +13,9 @@ enum class Direction
 
 class Camera
 {
-private:
-    // vectors
-    glm::vec3 pos_;
-    glm::vec3 front_;
-    glm::vec3 up_;
-    glm::vec3 right_;
-    glm::vec3 world_up_;
-
-    // Euler angles
-    GLfloat yaw_;
-    GLfloat pitch_;
-
-    // params
-    GLfloat speed_;
-    GLfloat mouse_sensitivity_;
-
-    // field of view
-    GLfloat fov_;
-
-    // update the camera vectors
-    void update_vectors();
-
 public:
-    Camera(glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f),
-           glm::vec3 up  = glm::vec3(0.0f, 1.0f, 0.0f),
+    Camera(const glm::vec3 &pos = glm::vec3(0.0f, 0.0f, 0.0f),
+           const glm::vec3 &up  = glm::vec3(0.0f, 1.0f, 0.0f),
            GLfloat yaw   = -90.0f,
            GLfloat pitch = 0.0f);
 
@@ -56,4 +34,26 @@ public:
     const GLfloat &fov() const;
     const glm::vec3 &position() const;
     const glm::vec3 &front() const;
+
+private:
+    // update the camera vectors
+    void update_vectors();
+
+    // vectors
+    glm::vec3 pos_;
+    glm::vec3 front_;
+    glm::vec3 up_;
+    glm::vec3 right_;
+    glm::vec3 world_up_;
+
+    // Euler angles
+    GLfloat yaw_;
+    GLfloat pitch_;
+
+    // params
+    GLfloat speed_;
+    GLfloat mouse_sensitivity_;
+
+    // field of view
+    GLfloat fov_;
 };

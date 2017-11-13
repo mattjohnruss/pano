@@ -1,5 +1,6 @@
 find_package(glfw3 3.2 REQUIRED)
 find_package(OpenGL REQUIRED)
+find_package(assimp REQUIRED)
 
 file(GLOB PANO_LIB_SRC *.cpp)
 
@@ -10,4 +11,4 @@ target_include_directories(pano PUBLIC ${pano_SOURCE_DIR}/include
                                        ${pano_SOURCE_DIR}/vendor/glad/include
                                        ${pano_SOURCE_DIR}/vendor/stb)
 
-target_link_libraries(pano ${OPENGL_gl_LIBRARY} glm glfw dl)
+target_link_libraries(pano ${OPENGL_gl_LIBRARY} glm glfw dl assimp)

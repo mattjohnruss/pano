@@ -2,16 +2,16 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-Camera::Camera(glm::vec3 pos,
-               glm::vec3 up,
-               GLfloat yaw,
-               GLfloat pitch)
+Camera::Camera(const glm::vec3 &pos,
+               const glm::vec3 &up,
+               const GLfloat yaw,
+               const GLfloat pitch)
     : pos_(pos),
       world_up_(up),
       yaw_(yaw),
       pitch_(pitch),
       front_(glm::vec3(0.0f, 0.0f, -1.0f)),
-      speed_(3.0f),
+      speed_(1.0f),
       mouse_sensitivity_(0.25f),
       fov_(45.0f)
 {

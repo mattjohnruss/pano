@@ -16,6 +16,7 @@ public:
     // Scalars
     void set_bool(const char *name, const GLboolean &value) const;
     void set_int(const char *name, const GLint &value) const;
+    void set_uint(const char *name, const GLuint &value) const;
     void set_float(const char *name, const GLfloat &value) const;
 
     // Vectors
