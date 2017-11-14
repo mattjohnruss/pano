@@ -21,68 +21,6 @@
 #include <cmath>
 #include <string>
 
-// vertices and normals of the cube
-GLfloat vertices[] =
-{
-    // positions          // normals           // texture coords
-    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
-     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 0.0f,
-     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 1.0f,
-
-    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
-     0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
-
-    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
-    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
-
-     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
-     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
-     0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
-
-    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 1.0f,
-     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
-     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
-
-    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
-     0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f
-};
-
-// positions of the various cubes
-glm::vec3 cube_positions[] =
-{
-    glm::vec3( 0.0f,  0.0f,  0.0f),
-    glm::vec3( 2.0f,  5.0f, -15.0f),
-    glm::vec3(-1.5f, -2.2f, -2.5f),
-    glm::vec3(-3.8f, -2.0f, -12.3f),
-    glm::vec3( 2.4f, -0.4f, -3.5f),
-    glm::vec3(-1.7f,  3.0f, -7.5f),
-    glm::vec3( 1.3f, -2.0f, -2.5f),
-    glm::vec3( 1.5f,  2.0f, -2.5f),
-    glm::vec3( 1.5f,  0.2f, -1.5f),
-    glm::vec3(-1.3f,  1.0f, -1.5f)
-};
-
 // point light positions
 std::vector<glm::vec3> point_light_positions
 {
@@ -183,6 +121,7 @@ private:
 
     // model
     //Model nanosuit_;
+    Model lamp_cube_;
     Model test_model_;
 
     // projection matrix
@@ -218,7 +157,8 @@ PanoWindow::PanoWindow(const unsigned width, const unsigned height, const std::s
     lamp_shader_("data/shaders/lamp.vert", "data/shaders/lamp.frag"),
     model_shader_("data/shaders/model_loading.vert", "data/shaders/model_loading.frag"),
     //nanosuit_("data/models/nanosuit/nanosuit.obj"),
-    test_model_(model_path.c_str())
+    test_model_(model_path.c_str()),
+    lamp_cube_("data/models/lampcube/lampcube.obj")
 {
     // define the viewport dimensions
     glViewport(0, 0, width_, height_);
@@ -228,46 +168,6 @@ PanoWindow::PanoWindow(const unsigned width, const unsigned height, const std::s
 
     // enable face culling
     glEnable(GL_CULL_FACE);
-
-    // Cube - generate 1 VAO and assign ID to handle
-    glGenVertexArrays(1, &cube_VAO_);
-
-    // generate one VBO buffer
-    glGenBuffers(1, &VBO_);
-
-    // bind the VAO
-    glBindVertexArray(cube_VAO_);
-
-    // bind the VBO to GL_ARRAY_BUFFER
-    glBindBuffer(GL_ARRAY_BUFFER, VBO_);
-
-    // allocate and fill data in the bound buffer
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    // set the vertex attributes pointers for positions
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(GLfloat), (GLvoid*)0);
-    glEnableVertexAttribArray(0);
-
-    // set the vertex attributes pointers for normals
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8*sizeof(GLfloat), (GLvoid*)(3*sizeof(GLfloat)));
-    glEnableVertexAttribArray(1);
-
-    // set the vertex attributes pointers for diffuse map
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8*sizeof(GLfloat), (GLvoid*)(6*sizeof(GLfloat)));
-    glEnableVertexAttribArray(2);
-
-    // lamp - generate 1 VAO and assign ID to handle
-    glGenVertexArrays(1, &lamp_VAO_);
-
-    // bind the VAO
-    glBindVertexArray(lamp_VAO_);
-
-    // allocate and fill data in the bound buffer
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    // set the vertex attributes pointers for positions
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(GLfloat), (GLvoid*)0);
-    glEnableVertexAttribArray(0);
 }
 
 void PanoWindow::render()
@@ -387,12 +287,8 @@ void PanoWindow::render()
         lamp_shader_.set_mat4("model_mat", model_mat);
 
         // render lamp
-        glBindVertexArray(lamp_VAO_);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        lamp_cube_.draw(lamp_shader_);
     }
-
-    // unbind VAO
-    glBindVertexArray(0);
 
     // swap buffers
     glfwSwapBuffers(window_);
