@@ -11,7 +11,7 @@ Model::Model(const std::string &path)
     // the importer retains ownership of all data and will destroy the scene in
     // its destructor
     const aiScene *scene =
-        importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+        importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals);
 
     // check if the scene was loaded correctly
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
