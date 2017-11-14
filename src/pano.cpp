@@ -417,7 +417,7 @@ int main(int argc, char **argv)
     glfwInit();
 
     // create a window object
-    PanoWindow window(1600, 900, "Pano", argv[1]);
+    PanoWindow window(1920, 1080, "Pano", argv[1]);
 
     // start the game loop
     window.run();

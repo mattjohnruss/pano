@@ -21,7 +21,8 @@ Window::Window(
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
     // create a GLFWwindow
-    window_ = glfwCreateWindow(width_, height_, name_.c_str(), NULL, NULL);
+    window_ =
+        glfwCreateWindow(width_, height_, name_.c_str(), glfwGetPrimaryMonitor(), NULL);
 
     // check the window was created successfully and quit if not
     if(window_ == NULL)
