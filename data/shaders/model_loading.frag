@@ -76,6 +76,9 @@ vec3 calc_directional_light(DirectionalLight light, vec3 normal, vec3 view_direc
     // directional light
     vec3 light_direction_norm = normalize(-light.direction);
 
+    // calculate the halfway vector
+    vec3 halfway_direction_norm = normalize(light_direction_norm + view_direction);
+
     // ambient
     vec3 ambient = light.ambient*texture(texture_diffuse1, tex_coords_interp).rgb;
 
@@ -84,8 +87,7 @@ vec3 calc_directional_light(DirectionalLight light, vec3 normal, vec3 view_direc
     vec3 diffuse = diffuse_amount*light.diffuse*texture(texture_diffuse1, tex_coords_interp).rgb;
 
     // specular
-    vec3 reflect_direction_norm = reflect(-light_direction_norm, normal);
-    float specular_amount = pow(max(dot(view_direction, reflect_direction_norm), 0.0f), shininess);
+    float specular_amount = pow(max(dot(halfway_direction_norm, normal), 0.0f), 4.0*shininess);
     vec3 specular = specular_amount*light.specular*texture(texture_specular1, tex_coords_interp).rgb;
 
     // return total
@@ -99,6 +101,9 @@ vec3 calc_point_light(PointLight light, vec3 normal, vec3 frag_position, vec3 vi
     // calculate the direction from the current fragment to the light
     vec3 light_direction_norm = normalize(light.position - frag_position);
 
+    // calculate the halfway vector
+    vec3 halfway_direction_norm = normalize(light_direction_norm + view_direction);
+
     // calculate the distance from the current fragment to the light
     float distance = length(light.position - frag_position);
 
@@ -110,8 +115,7 @@ vec3 calc_point_light(PointLight light, vec3 normal, vec3 frag_position, vec3 vi
     vec3 diffuse = diffuse_amount*light.diffuse*texture(texture_diffuse1, tex_coords_interp).rgb;
 
     // specular
-    vec3 reflect_direction_norm = reflect(-light_direction_norm, normal);
-    float specular_amount = pow(max(dot(view_direction, reflect_direction_norm), 0.0f), shininess);
+    float specular_amount = pow(max(dot(halfway_direction_norm, normal), 0.0f), 4.0*shininess);
     vec3 specular = specular_amount*light.specular*texture(texture_specular1, tex_coords_interp).rgb;
 
     // attenuation
@@ -134,6 +138,9 @@ vec3 calc_spotlight(Spotlight light, vec3 normal, vec3 frag_position, vec3 view_
     // calculate the direction from the current fragment to the light
     vec3 light_direction_norm = normalize(light.position - frag_position);
 
+    // calculate the halfway vector
+    vec3 halfway_direction_norm = normalize(light_direction_norm + view_direction);
+
     // calculate the distance from the current fragment to the light
     float distance = length(light.position - frag_position);
 
@@ -145,8 +152,7 @@ vec3 calc_spotlight(Spotlight light, vec3 normal, vec3 frag_position, vec3 view_
     vec3 diffuse = diffuse_amount*light.diffuse*texture(texture_diffuse1, tex_coords_interp).rgb;
 
     // specular
-    vec3 reflect_direction_norm = reflect(-light_direction_norm, normal);
-    float specular_amount = pow(max(dot(view_direction, reflect_direction_norm), 0.0f), shininess);
+    float specular_amount = pow(max(dot(halfway_direction_norm, normal), 0.0f), 4.0*shininess);
     vec3 specular = specular_amount*light.specular*texture(texture_specular1, tex_coords_interp).rgb;
 
     // cutoff
