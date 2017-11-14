@@ -170,6 +170,8 @@ void Mesh::load_material_textures(
     // get the number of textures in the material of the specified type
     unsigned n_texture = material->GetTextureCount(tex_type);
 
+    std::cout << "n_texture (" << (tex_type == aiTextureType_DIFFUSE ? "diffuse" : "specular") << ") = " << n_texture << '\n';
+
     // loop over the textures
     for(unsigned i = 0; i < n_texture; ++i)
     {

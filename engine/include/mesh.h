@@ -8,10 +8,6 @@
 #include <string>
 #include <unordered_map>
 
-// TODO
-// * make load_material_textures not return by value
-// * use an enum for texture types instead of an std::string (just use aiTextureType!)
-
 // forward declaration of Model
 class Model;
 
