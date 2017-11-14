@@ -96,10 +96,10 @@ vec3 calc_directional_light(DirectionalLight light, vec3 normal, vec3 view_direc
 // assumes vector parameters are normalised (where appropriate)
 vec3 calc_point_light(PointLight light, vec3 normal, vec3 frag_position, vec3 view_direction)
 {
-    // calculate the direction to the light from the current fragment
+    // calculate the direction from the current fragment to the light
     vec3 light_direction_norm = normalize(light.position - frag_position);
 
-    // calculate the distance from the light to the current fragment
+    // calculate the distance from the current fragment to the light
     float distance = length(light.position - frag_position);
 
     // ambient
@@ -131,10 +131,10 @@ vec3 calc_point_light(PointLight light, vec3 normal, vec3 frag_position, vec3 vi
 // assumes vector parameters are normalised (where appropriate)
 vec3 calc_spotlight(Spotlight light, vec3 normal, vec3 frag_position, vec3 view_direction)
 {
-    // calculate the direction to the light from the current fragment
+    // calculate the direction from the current fragment to the light
     vec3 light_direction_norm = normalize(light.position - frag_position);
 
-    // calculate the distance from the light to the current fragment
+    // calculate the distance from the current fragment to the light
     float distance = length(light.position - frag_position);
 
     // ambient
