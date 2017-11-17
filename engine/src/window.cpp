@@ -27,7 +27,7 @@ Window::Window(
     // check the window was created successfully and quit if not
     if(window_ == NULL)
     {
-        std::cerr << "ERROR::WINDOW::Failed to create GLFW window" << std::endl;
+        std::cerr << "Window::Window - failed to create GLFW window\n";
         glfwTerminate();
         std::exit(1);
     }
@@ -50,7 +50,7 @@ Window::Window(
     // set the opengl function pointers using glad
     if(!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
     {
-        std::cerr << "Failed to initialize OpenGL context" << std::endl;
+        std::cerr << "Window::Window - GLAD failed to initialize OpenGL context\n";
         std::exit(1);
     }
 }
@@ -104,6 +104,13 @@ void Window::run()
     // loop until the window is closed
     while(!glfwWindowShouldClose(window_))
     {
+#ifdef PANO_DEBUG
+        GLenum gl_error = glGetError();
+        if(gl_error != GL_NO_ERROR)
+        {
+            std::cerr << "Window::run - GL error(" << gl_error << ")\n";
+        }
+#endif
         // eventually this may call separate functions such as:
         // process_input();
         // update_state();

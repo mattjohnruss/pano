@@ -44,9 +44,9 @@ Shader::Shader(const GLchar *vertex_path, const GLchar *fragment_path)
     if(!success)
     {
         glGetShaderInfoLog(vertex, infolog_size, NULL, infolog);
-        std::cerr << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
+        std::cerr << "Shader::Shader - vertex shader compilation failed\n"
                   << "(in file \"" << vertex_path << "\")\n"
-                  << infolog << std::endl;
+                  << infolog << '\n';
     }
 
     // fragment shader
@@ -58,9 +58,9 @@ Shader::Shader(const GLchar *vertex_path, const GLchar *fragment_path)
     if(!success)
     {
         glGetShaderInfoLog(fragment, infolog_size, NULL, infolog);
-        std::cerr << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n"
+        std::cerr << "Shader::Shader - fragment shader compilation failed\n"
                   << "(in file \"" << fragment_path << "\")\n"
-                  << infolog << std::endl;
+                  << infolog << '\n';
     }
 
     // program
@@ -74,8 +74,8 @@ Shader::Shader(const GLchar *vertex_path, const GLchar *fragment_path)
     if(!success)
     {
         glGetProgramInfoLog(program_, 512, NULL, infolog);
-        std::cerr << "ERROR::PROGRAM::LINK_FAILED\n"
-                  << infolog << std::endl;
+        std::cerr << "Shader::Shader - shader program link failed\n"
+                  << infolog << '\n';
     }
 
     // detach the vertex and fragment shaders from the program
@@ -85,7 +85,6 @@ Shader::Shader(const GLchar *vertex_path, const GLchar *fragment_path)
     // delete the shader objects
     glDeleteShader(vertex);
     glDeleteShader(fragment);
-
 }
 
 Shader::~Shader()
