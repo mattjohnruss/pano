@@ -1,6 +1,7 @@
 #include <model.h>
 
 #include <iostream>
+#include <stack>
 
 Model::Model(const std::string &path)
 {
@@ -16,14 +17,15 @@ Model::Model(const std::string &path)
     // check if the scene was loaded correctly
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
-        std::cerr << "ERROR::MODEL::ASSIMP::" << importer.GetErrorString() << '\n';
+        std::cerr << "Model::Model - Assimp error:" << importer.GetErrorString() << '\n';
         return;
     }
 
+    // get the directory from the filename
     directory_ = path.substr(0, path.find_last_of('/'));
 
-    // start processing the scene from the root node
-    process_node(scene->mRootNode, scene);
+    // traverse and process the scene
+    traverse_and_process(scene);
 }
 
 Model::~Model()
@@ -36,7 +38,7 @@ Model::~Model()
     }
 }
 
-void Model::draw(Shader &shader) const
+void Model::draw(const Shader &shader, const GLenum mode) const
 {
     // get the number of meshes
     unsigned n_mesh = meshes_.size();
@@ -45,14 +47,41 @@ void Model::draw(Shader &shader) const
     for(unsigned i = 0; i < n_mesh; ++i)
     {
         // draw the draw function on each mesh
-        meshes_[i]->draw(shader);
+        meshes_[i]->draw(shader, mode);
     }
 }
 
-void Model::process_node(aiNode *node, const aiScene * const scene)
+void Model::traverse_and_process(const aiScene *const scene)
 {
-    //std::cout << "Model::process_node\n";
+    // stack of nodes
+    std::stack<aiNode*> node_stack;
 
+    // push the root node onto the stack
+    node_stack.push(scene->mRootNode);
+
+    // while there are nodes left to proceses
+    while(!node_stack.empty())
+    {
+        // get the top node and pop off the stack
+        aiNode *top_node = node_stack.top();
+        node_stack.pop();
+
+        // get the number of children of the current node
+        unsigned n_children = top_node->mNumChildren;
+
+        // push the children of the top node onto the stack
+        for(unsigned i = 0; i < n_children; ++i)
+        {
+            node_stack.push(top_node->mChildren[i]);
+        }
+
+        // process the top node
+        process_node(top_node, scene);
+    }
+}
+
+void Model::process_node(aiNode *node, const aiScene *const scene)
+{
     // get the number of meshes at the node
     unsigned n_mesh = node->mNumMeshes;
 
@@ -64,18 +93,5 @@ void Model::process_node(aiNode *node, const aiScene * const scene)
 
         // process the mesh into a Mesh object and store a pointer to it in meshes_
         meshes_.push_back(new Mesh(mesh, scene, directory_, *this));
-        //std::cout << "Model::process_node - new mesh created\n";
-    }
-
-    // get the number of children of the current node
-    unsigned n_children = node->mNumChildren;
-
-    // loop over the children
-    for(unsigned i = 0; i < n_children; ++i)
-    {
-        //std::cout << "Model::process_node - child\n";
-        // recursively processes the children of the current node
-        // (awful - what if the tree is very deep?)
-        process_node(node->mChildren[i], scene);
     }
 }

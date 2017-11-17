@@ -31,8 +31,8 @@ public:
         return textures_;
     }
 
-    // draw the model
-    void draw(Shader &shader) const;
+    // draw the model with a specified gl draw mode, defaulting to triangles
+    void draw(const Shader &shader, const GLenum mode = GL_TRIANGLES) const;
 
 private:
     // vector of sub-meshes making up the model
@@ -45,6 +45,9 @@ private:
     // gets around relative/absolute path problems (does it?)
     std::string directory_;
 
+    // traverse the scene hierarchy and process each node
+    void traverse_and_process(const aiScene *const scene);
+
     // process a node from an assimp scene
-    void process_node(aiNode *node, const aiScene * const scene);
+    void process_node(aiNode *node, const aiScene *const scene);
 };

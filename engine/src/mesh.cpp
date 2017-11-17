@@ -5,8 +5,8 @@
 #include <iostream>
 
 Mesh::Mesh(
-        const aiMesh * const mesh,
-        const aiScene * const scene,
+        const aiMesh *const mesh,
+        const aiScene *const scene,
         const std::string &directory,
         Model &parent_model) :
     directory_(directory)
@@ -73,7 +73,7 @@ Mesh::Mesh(
     setup_buffers();
 }
 
-void Mesh::draw(const Shader &shader) const
+void Mesh::draw(const Shader &shader, const GLenum mode) const
 {
     // counters for the diffuse and specular textures
     unsigned i_diffuse = 0;
@@ -122,7 +122,7 @@ void Mesh::draw(const Shader &shader) const
 
     // draw the mesh
     glBindVertexArray(VAO_);
-    glDrawElements(GL_TRIANGLES, indices_.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(mode, indices_.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 
@@ -170,7 +170,7 @@ void Mesh::load_material_textures(
     // get the number of textures in the material of the specified type
     unsigned n_texture = material->GetTextureCount(tex_type);
 
-    std::cout << "n_texture (" << (tex_type == aiTextureType_DIFFUSE ? "diffuse" : "specular") << ") = " << n_texture << '\n';
+    //std::cout << "n_texture (" << (tex_type == aiTextureType_DIFFUSE ? "diffuse" : "specular") << ") = " << n_texture << '\n';
 
     // loop over the textures
     for(unsigned i = 0; i < n_texture; ++i)

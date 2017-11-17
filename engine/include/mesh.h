@@ -33,8 +33,8 @@ class Mesh
 {
 public:
     // constructor which processes assimp data structures into ours
-    Mesh(const aiMesh * const mesh,
-         const aiScene * const scene,
+    Mesh(const aiMesh *const mesh,
+         const aiScene *const scene,
          const std::string &directory,
          Model &parent_model);
 
@@ -42,8 +42,8 @@ public:
     Mesh(const Mesh &) = delete;
     Mesh& operator=(const Mesh &) = delete;
 
-    // draw the mesh
-    void draw(const Shader &shader) const;
+    // draw the mesh with a specified gl draw mode, defaulting to triangles
+    void draw(const Shader &shader, const GLenum mode = GL_TRIANGLES) const;
 
 private:
     // setup the gl buffers for the mesh
