@@ -10,12 +10,11 @@ class Window
 {
 public:
     // constructor
-    Window(
-            const unsigned width,
-            const unsigned height,
-            const std::string &name,
-            const int minor_gl_version = 3,
-            const int major_gl_version = 3);
+    Window(const unsigned width,
+           const unsigned height,
+           const std::string &name,
+           const int minor_gl_version = 4,
+           const int major_gl_version = 5);
 
     // destructor
     virtual ~Window();

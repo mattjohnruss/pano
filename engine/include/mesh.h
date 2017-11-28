@@ -1,7 +1,11 @@
 #pragma once
 
-#include <shader.h>
+#include <vertex.h>
+#include <buffer.h>
+#include <index_buffer.h>
+#include <vertex_array.h>
 
+#include <glad/glad.h>
 #include <assimp/scene.h>
 #include <glm/glm.hpp>
 #include <vector>
@@ -10,6 +14,7 @@
 
 // forward declaration of Model
 class Model;
+class Shader;
 
 // simple texture data structure for use in Mesh
 struct MeshTexture
@@ -19,16 +24,11 @@ struct MeshTexture
     aiTextureType type;
 };
 
-// vertex data structure
-// stores the position vector, normal vector and texture coords of a vertex
-struct Vertex
-{
-    glm::vec3 position;
-    glm::vec3 normal;
-    glm::vec2 tex_coords;
-};
-
 // Mesh class
+//
+// The Model object which creates a Mesh, which is passed to the constructor,
+// must be kept alive for the lifetime of the Mesh, since the Model owns the
+// storage for the textures of all it's Meshes.
 class Mesh
 {
 public:
@@ -38,22 +38,27 @@ public:
          const std::string &directory,
          Model &parent_model);
 
-    // delete the copy constructor and assignment operator
+    // delete the copy constructor and assignment operator to make sure we
+    // don't copy anything around by accident
     Mesh(const Mesh &) = delete;
     Mesh& operator=(const Mesh &) = delete;
+
+    void draw() const {}
 
     // draw the mesh with a specified gl draw mode, defaulting to triangles
     void draw(const Shader &shader, const GLenum mode = GL_TRIANGLES) const;
 
 private:
-    // setup the gl buffers for the mesh
-    void setup_buffers();
-
     // load textures specified by the assimp material structure
     void load_material_textures(
             aiMaterial *material,
             aiTextureType tex_type,
             Model &parent_model);
+
+    // buffer and array objects
+    Buffer vbo_;
+    IndexBuffer ebo_;
+    VertexArray vao_;
 
     // storage for the vertices, indices and textures of the mesh
     std::vector<Vertex> vertices_;
@@ -63,9 +68,4 @@ private:
     // directory from which the assets are loaded
     // gets around relative/absolute path problems
     std::string directory_;
-
-    // handles for the gl buffer objects
-    unsigned VAO_;
-    unsigned VBO_;
-    unsigned EBO_;
 };

@@ -1,6 +1,9 @@
 //#include <mesh.h>
 #include <model.h>
 #include <texture.h>
+#include <shader.h>
+
+#include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
 
@@ -70,7 +73,10 @@ Mesh::Mesh(
     }
 
     // setup and populate the gl buffers with the mesh data
-    setup_buffers();
+    vbo_.set_data(vertices_);
+    ebo_.set_data(indices_);
+    vao_.add_buffer(vbo_, {VertexDataType::POSITION, VertexDataType::NORMAL, VertexDataType::TEX_COORDS}, {0,1,2});
+    vao_.add_index_buffer(ebo_);
 }
 
 void Mesh::draw(const Shader &shader, const GLenum mode) const
@@ -83,6 +89,10 @@ void Mesh::draw(const Shader &shader, const GLenum mode) const
     unsigned n_texture = textures_.size();
 
     // loop over the textures
+    // TODO does Assimp split the model so that each mesh only has one texture
+    // of each type? At least .obj files seem to work like that. Maybe let's
+    // stick to one model file type to make writing shaders and setting
+    // uniforms for Mesh drawing simpler.
     for(unsigned i = 0; i < n_texture; ++i)
     {
         // is adding to GL_TEXTURE0 allowed? part of gl spec says not
@@ -97,6 +107,8 @@ void Mesh::draw(const Shader &shader, const GLenum mode) const
         if(textures_[i]->type == aiTextureType_DIFFUSE)
         {
             // if it's diffuse, increment diffuse counter and convert to a string
+            // TODO optimise this by not constructing multiple std::string
+            // objects per frame per texture per mesh!
             ++i_diffuse;
             number = std::to_string(i_diffuse);
 
@@ -121,45 +133,11 @@ void Mesh::draw(const Shader &shader, const GLenum mode) const
     glActiveTexture(GL_TEXTURE0);
 
     // draw the mesh
-    glBindVertexArray(VAO_);
+    //glBindVertexArray(VAO_);
+    vao_.bind();
     glDrawElements(mode, indices_.size(), GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
-}
-
-void Mesh::setup_buffers()
-{
-    // generate VAO, VBO and EBO
-    glGenVertexArrays(1, &VAO_);
-    glGenBuffers(1, &VBO_);
-    glGenBuffers(1, &EBO_);
-
-    // bind the VAO and bind the VBO to the array buffer
-    glBindVertexArray(VAO_);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO_);
-
-    // allocate and fill array buffer with vertices
-    glBufferData(GL_ARRAY_BUFFER, vertices_.size()*sizeof(Vertex), &vertices_[0], GL_STATIC_DRAW);
-
-    // bind EBO to the element array buffer
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_);
-
-    // fill element array buffer with indices
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_.size()*sizeof(unsigned), &indices_[0], GL_STATIC_DRAW);
-
-    // vertex positions
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-
-    // vertex normals
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
-
-    // vertex texture coords
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tex_coords));
-
-    // unbind vertex array
-    glBindVertexArray(0);
+    vao_.unbind();
+    //glBindVertexArray(0);
 }
 
 void Mesh::load_material_textures(

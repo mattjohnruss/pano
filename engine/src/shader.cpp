@@ -89,16 +89,19 @@ Shader::Shader(const GLchar *vertex_path, const GLchar *fragment_path)
 
 Shader::~Shader()
 {
+    // delete the shader program
     glDeleteProgram(program_);
 }
 
 void Shader::use() const
 {
+    // use the shader program
     glUseProgram(program_);
 }
 
 const GLuint Shader::program() const
 {
+    // return the id of the shader program
     return program_;
 }
 

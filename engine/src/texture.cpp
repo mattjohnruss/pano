@@ -6,7 +6,8 @@
 #include <iostream>
 #include <algorithm>
 
-Texture::Texture(GLuint id) : id_(id)
+Texture::Texture(GLuint id)
+    : id_(id)
 {
 }
 
@@ -20,7 +21,8 @@ const GLuint Texture::id() const
     return id_;
 }
 
-Texture2D::Texture2D(const char *image_path) : Texture(texture_from_file(image_path, ""))
+Texture2D::Texture2D(const std::string &image_path)
+    : Texture(texture_from_file(image_path, ""))
 {
 }
 
@@ -34,17 +36,18 @@ void Texture2D::use(GLenum active_texture) const
     glBindTexture(GL_TEXTURE_2D, id_);
 }
 
-GLuint Texture2D::texture_from_file(const char *image_path, const std::string &directory)
+GLuint Texture2D::texture_from_file(const std::string &image_path,
+                                    const std::string &directory)
 {
     std::string filename;
 
     if(directory == "")
     {
-        filename = std::string(image_path);
+        filename = image_path;
     }
     else
     {
-        filename = directory + "/" + std::string(image_path);
+        filename = directory + "/" + image_path;
     }
 
     // replace all occurences of Windows style '\' with '/' in texture path
@@ -101,7 +104,8 @@ GLuint Texture2D::texture_from_file(const char *image_path, const std::string &d
                 texture_format = GL_RGBA;
                 break;
             default:
-                std::cerr << "Texture2D::texture_from_file - n_components = " << n_components << " unsupported\n";
+                std::cerr << "Texture2D::texture_from_file - n_components = "
+                          << n_components << " unsupported\n";
                 std::cerr << "Attempting to use texture_format = GL_RGB\n";
                 texture_format = GL_RGB;
         }
@@ -141,8 +145,8 @@ GLuint Texture2D::texture_from_file(const char *image_path, const std::string &d
     return id;
 }
 
-Texture3D::Texture3D(const std::vector<std::string> &image_paths) :
-    Texture(texture_from_file(image_paths, ""))
+Texture3D::Texture3D(const std::vector<std::string> &image_paths)
+    : Texture(texture_from_file(image_paths, ""))
 {
     std::cout << "Texture3D::Texture3D - id_ = " << id_ << '\n';
 }
@@ -190,11 +194,11 @@ GLuint Texture3D::texture_from_file(
     {
         if(directory == "")
         {
-            filenames[i] = std::string(image_paths[i]);
+            filenames[i] = image_paths[i];
         }
         else
         {
-            filenames[i] = directory + "/" + std::string(image_paths[i]);
+            filenames[i] = directory + "/" + image_paths[i];
         }
 
         // replace all occurences of Windows style '\' with '/' in texture path

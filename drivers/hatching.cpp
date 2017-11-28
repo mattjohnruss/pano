@@ -11,7 +11,6 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-//#include <glm/gtc/type_ptr.hpp>
 
 // for matX operator<<
 #define GLM_ENABLE_EXPERIMENTAL
@@ -38,10 +37,6 @@ public:
 
     ~PanoWindow()
     {
-        // delete arrays/buffers
-        glDeleteVertexArrays(1, &cube_VAO_);
-        glDeleteVertexArrays(1, &lamp_VAO_);
-        glDeleteBuffers(1, &VBO_);
     }
 
     void key_callback(int key, int scancode, int action, int mode)
@@ -107,15 +102,6 @@ private:
     double current_frame_;
     double previous_frame_;
 
-    // Cube VAO handle
-    GLuint cube_VAO_;
-
-    // VBO handle
-    GLuint VBO_;
-
-    // lamp VAO handle
-    GLuint lamp_VAO_;
-
     // shaders
     Shader lamp_shader_;
     Shader model_shader_;
@@ -165,24 +151,24 @@ PanoWindow::PanoWindow(const unsigned width, const unsigned height, const std::s
     model_shader_("data/shaders/hatching.vert", "data/shaders/hatching.frag"),
     test_model_(model_path.c_str()),
     lamp_cube_("data/models/lampcube/lampcube.obj"),
-    hatching_tex_({
-            "data/textures/hatching3/hatching0.png",
-            "data/textures/hatching3/hatching1.png",
-            "data/textures/hatching3/hatching2.png",
-            "data/textures/hatching3/hatching3.png",
-            "data/textures/hatching3/hatching4.png",
-            "data/textures/hatching3/hatching5.png",
-            "data/textures/hatching3/hatching6.png",
-            "data/textures/hatching3/hatching7.png"}),
     //hatching_tex_({
-            //"data/textures/hatching2/hatching20.png",
-            //"data/textures/hatching2/hatching21.png",
-            //"data/textures/hatching2/hatching22.png",
-            //"data/textures/hatching2/hatching23.png",
-            //"data/textures/hatching2/hatching24.png",
-            //"data/textures/hatching2/hatching25.png",
-            //"data/textures/hatching2/hatching26.png",
-            //"data/textures/hatching2/hatching27.png"}),
+            //"data/textures/hatching3/hatching0.png",
+            //"data/textures/hatching3/hatching1.png",
+            //"data/textures/hatching3/hatching2.png",
+            //"data/textures/hatching3/hatching3.png",
+            //"data/textures/hatching3/hatching4.png",
+            //"data/textures/hatching3/hatching5.png",
+            //"data/textures/hatching3/hatching6.png",
+            //"data/textures/hatching3/hatching7.png"}),
+    hatching_tex_({
+            "data/textures/hatching2/hatching20.png",
+            "data/textures/hatching2/hatching21.png",
+            "data/textures/hatching2/hatching22.png",
+            "data/textures/hatching2/hatching23.png",
+            "data/textures/hatching2/hatching24.png",
+            "data/textures/hatching2/hatching25.png",
+            "data/textures/hatching2/hatching26.png",
+            "data/textures/hatching2/hatching27.png"}),
     gen(rd()),
     norm_dist(0,0.01)
 

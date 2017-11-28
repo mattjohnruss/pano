@@ -6,11 +6,16 @@
 class Shader
 {
 public:
+    // construct a shader from vert and frag source code on disk
     Shader(const GLchar *vertex_path, const GLchar *fragment_path);
+
+    // delete the shader program
     ~Shader();
 
+    // use the shader program
     void use() const;
 
+    // return the id of the shader program
     const GLuint program() const;
 
     // Scalars

@@ -23,6 +23,7 @@ Window::Window(
     // create a GLFWwindow
     window_ =
         glfwCreateWindow(width_, height_, name_.c_str(), glfwGetPrimaryMonitor(), NULL);
+        //glfwCreateWindow(width_, height_, name_.c_str(), NULL, NULL);
 
     // check the window was created successfully and quit if not
     if(window_ == NULL)
@@ -44,8 +45,11 @@ Window::Window(
     glfwSetCursorPosCallback(window_, sd_cursor_position_callback);
     glfwSetScrollCallback(window_, sd_scroll_callback);
 
+    // disable vsync (for performance analysis)
+    //glfwSwapInterval(0);
+
     // enable mouse capturing
-    glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     // set the opengl function pointers using glad
     if(!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
@@ -105,8 +109,8 @@ void Window::run()
     while(!glfwWindowShouldClose(window_))
     {
 #ifdef PANO_DEBUG
-        GLenum gl_error = glGetError();
-        if(gl_error != GL_NO_ERROR)
+        GLenum gl_error;
+        while((gl_error = glGetError()) != GL_NO_ERROR)
         {
             std::cerr << "Window::run - GL error(" << gl_error << ")\n";
         }

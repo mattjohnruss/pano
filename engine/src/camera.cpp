@@ -70,7 +70,7 @@ void Camera::process_mouse_movement(
             pitch_ = -89.0f;
     }
 
-    // Update Front, Right and Up Vectors using the updated Eular angles
+    // Update Front, Right and Up Vectors using the updated Euler angles
     update_vectors();
 }
 

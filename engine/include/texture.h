@@ -24,6 +24,9 @@
 class Texture
 {
 public:
+    Texture() = delete;
+    Texture(const Texture&) = delete;
+
     Texture(GLuint id);
     virtual ~Texture();
 
@@ -38,22 +41,29 @@ protected:
 class Texture2D : public Texture
 {
 public:
-    Texture2D(const char *image_path);
+    Texture2D() = delete;
+    Texture2D(const Texture2D&) = delete;
+
+    Texture2D(const std::string &image_path);
     ~Texture2D();
 
     void use(GLenum active_texture) const;
 
-    static GLuint texture_from_file(const char *image_path, const std::string &directory);
+    static GLuint texture_from_file(const std::string &image_path,
+                                    const std::string &directory);
 };
 
 class Texture3D : public Texture
 {
 public:
+    Texture3D() = delete;
+    Texture3D(const Texture3D&) = delete;
+
     Texture3D(const std::vector<std::string> &image_paths);
     ~Texture3D();
 
     void use(GLenum active_texture) const;
 
-    static GLuint texture_from_file(
-            const std::vector<std::string> &image_paths, const std::string &directory);
+    static GLuint texture_from_file(const std::vector<std::string> &image_paths,
+                                    const std::string &directory);
 };

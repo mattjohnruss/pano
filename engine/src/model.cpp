@@ -30,12 +30,32 @@ Model::Model(const std::string &path)
 
 Model::~Model()
 {
+    // get the number of meshes
     unsigned n_mesh = meshes_.size();
 
+    // loop over the meshes and delete them all
     for(unsigned i = 0; i < n_mesh; ++i)
     {
         delete meshes_[i];
     }
+}
+
+const std::unordered_map<std::string, MeshTexture>& Model::textures() const
+{
+    // return the textures map (const)
+    return textures_;
+}
+
+std::unordered_map<std::string, MeshTexture>& Model::textures()
+{
+    // return the textures map
+    return textures_;
+}
+
+const std::vector<Mesh *>& Model::meshes() const
+{
+    // return the vector of meshes (const)
+    return meshes_;
 }
 
 void Model::draw(const Shader &shader, const GLenum mode) const

@@ -7,29 +7,34 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+// forward delcaration
+class Renderer;
+
 // Model class
 // loads a model (using assimp), storing data in instances of our Mesh class
+//
+// A Model object keeps track of the textures all of its Mesh objects use in
+// the textures_ map. This is to avoid loading textures multiple times when
+// they are used in multiple Meshes. Each Mesh has a vector of pointers to the
+// actual textures it uses
+
 class Model
 {
 public:
-    // allow the Mesh class access to the Model's global texture hashmap
-    //friend void Mesh::load_material_textures(aiMaterial*, aiTextureType, Model&);
-
     // constructor
     Model(const std::string &path);
 
     // destructor
     ~Model();
 
-    const std::unordered_map<std::string, MeshTexture> &textures() const
-    {
-        return textures_;
-    }
+    // return the textures map (const)
+    const std::unordered_map<std::string, MeshTexture> &textures() const;
 
-    std::unordered_map<std::string, MeshTexture> &textures()
-    {
-        return textures_;
-    }
+    // return the textures map
+    std::unordered_map<std::string, MeshTexture> &textures();
+
+    // return the vector of meshes (const)
+    const std::vector<Mesh *>& meshes() const;
 
     // draw the model with a specified gl draw mode, defaulting to triangles
     void draw(const Shader &shader, const GLenum mode = GL_TRIANGLES) const;

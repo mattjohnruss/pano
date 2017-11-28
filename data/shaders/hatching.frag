@@ -105,7 +105,7 @@ void main()
     // final colour
     // ------------
     colour = vec4(hatching, 1.0);
-    //colour = vec4(vec3(intensity), 1.0);
+
     //colour = vec4(tex_coords.x, tex_coords.y, tex_coords.z, 1.0);
 
     // version without using texture
