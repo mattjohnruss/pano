@@ -3,8 +3,9 @@ find_package(OpenGL REQUIRED)
 find_package(assimp REQUIRED)
 
 file(GLOB ENGINE_SRC src/*.cpp)
+file(GLOB ENGINE_INC include/*.h)
 
-add_library(engine SHARED ${ENGINE_SRC} ${pano_SOURCE_DIR}/vendor/glad/src/glad.c)
+add_library(engine SHARED ${ENGINE_SRC} ${ENGINE_INC} ${pano_SOURCE_DIR}/vendor/glad/src/glad.c)
 
 target_include_directories(engine PUBLIC include
                                          ${pano_SOURCE_DIR}/vendor/glad/include
