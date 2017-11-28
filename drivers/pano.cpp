@@ -43,7 +43,7 @@ public:
         glDeleteBuffers(1, &VBO_);
     }
 
-    void key_callback(int key, int scancode, int action, int mode)
+    void key_callback(int key, int scancode, int action, int mode) override
     {
         if(action == GLFW_PRESS)
         {
@@ -61,7 +61,7 @@ public:
             pressed_keys_[key] = false;
     }
 
-    void cursor_position_callback(double x_pos, double y_pos)
+    void cursor_position_callback(double x_pos, double y_pos) override
     {
         using glm::radians;
 
@@ -81,12 +81,12 @@ public:
         camera_.process_mouse_movement(x_offset, y_offset);
     }
 
-    void scroll_callback(double x_offset, double y_offset)
+    void scroll_callback(double x_offset, double y_offset) override
     {
         camera_.process_mouse_scroll(y_offset);
     }
 
-    void render();
+    void render() override;
 
 private:
     // camera

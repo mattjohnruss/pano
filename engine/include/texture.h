@@ -47,7 +47,7 @@ public:
     Texture2D(const std::string &image_path);
     ~Texture2D();
 
-    void use(GLenum active_texture) const;
+    void use(GLenum active_texture) const override;
 
     static GLuint texture_from_file(const std::string &image_path,
                                     const std::string &directory);
@@ -62,7 +62,7 @@ public:
     Texture3D(const std::vector<std::string> &image_paths);
     ~Texture3D();
 
-    void use(GLenum active_texture) const;
+    void use(GLenum active_texture) const override;
 
     static GLuint texture_from_file(const std::vector<std::string> &image_paths,
                                     const std::string &directory);

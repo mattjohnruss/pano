@@ -39,7 +39,7 @@ public:
     {
     }
 
-    void key_callback(int key, int scancode, int action, int mode)
+    void key_callback(int key, int scancode, int action, int mode) override
     {
         if(action == GLFW_PRESS)
         {
@@ -50,7 +50,7 @@ public:
         }
     }
 
-    void render()
+    void render() override
     {
         double current_time = glfwGetTime();
         double delta_time = current_time - previous_time;
