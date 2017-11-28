@@ -1,2 +1,5 @@
 build
 build-debug
+build-debug-opt
+CMakeLists.txt.user
+.ctrlpignore
