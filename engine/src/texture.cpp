@@ -53,8 +53,10 @@ GLuint Texture2D::texture_from_file(const std::string &image_path,
     // replace all occurences of Windows style '\' with '/' in texture path
     std::replace(filename.begin(), filename.end(), '\\', '/');
 
+#ifdef PANO_DEBUG
     // output the (parsed) texture path
     std::cout << "Texture2D::texture_from_file - filename = " << filename << '\n';
+#endif
 
     // declare the texture handle
     GLuint id;
@@ -117,9 +119,9 @@ GLuint Texture2D::texture_from_file(const std::string &image_path,
 
         // set min and mag filters
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
         // create the texture from the image data
         glTexImage2D(GL_TEXTURE_2D, 0, texture_format, image_width, image_height, 0,
@@ -178,7 +180,7 @@ GLuint Texture3D::texture_from_file(
     {
         std::cerr << "Texture3D::texture_from_file - vector of image paths is empty\n";
 
-        // is it ok to return a texture handle of 0?
+        // TODO is it ok to return a texture handle of 0?
         // trying to load 0 textures is a bug anyway so yolo
         return 0;
     }

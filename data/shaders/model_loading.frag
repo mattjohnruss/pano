@@ -201,7 +201,7 @@ void main()
     }
 
     // add contribution from spotlight
-    //total_colour += calc_spotlight(spotlight, normal_interp_norm, frag_position, view_direction_norm);
+    total_colour += calc_spotlight(spotlight, normal_interp_norm, frag_position, view_direction_norm);
 
     // final colour
     // ------------

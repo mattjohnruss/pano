@@ -14,6 +14,10 @@
 #include <iostream>
 #include <chrono>
 
+//#ifdef PANO_PROFILE TODO or something
+//#include <gperftools/profiler.h>
+//#endif
+
 class GameWindow : public Window
 {
 public:
@@ -105,9 +109,10 @@ public:
         level_.draw(shader_);
 
         glfwSwapBuffers(window_);
-        glfwWaitEventsTimeout(static_cast<float>(1.0/60.0));
+        //glfwWaitEventsTimeout(static_cast<float>(1.0/60.0));
+        //glfwWaitEventsTimeout(static_cast<float>(1.0));
         //glfwWaitEvents();
-        //glfwPollEvents();
+        glfwPollEvents();
     }
 
 private:
@@ -130,7 +135,10 @@ int main(int argc, char **argv)
 
     //GameWindow window(1200, 900, argv[1]);
     GameWindow window(1920, 1080, argv[1]);
+
+    //ProfilerStart("profile.log");
     window.run();
+    //ProfilerStop();
 
     glfwTerminate();
 

@@ -5,35 +5,38 @@
 #include <vertex_array.h>
 #include <shader.h>
 #include <texture.h>
+#include <batch_renderer.h>
 
 #include <glm/glm.hpp>
 
 #include <vector>
 #include <string>
 #include <memory>
+#include <random>
 
 class Level
 {
 public:
-    struct TileVertex
-    {
-        glm::vec3 position;
-        glm::vec3 colour;
-    };
+    //struct TileVertex
+    //{
+        //glm::vec3 position;
+        //glm::vec3 colour;
+    //};
 
     Level(const std::string &level_path);
 
     void draw(Shader &shader);
 
 private:
-    //std::vector<TileVertex> tile_vertices_;
-    //std::vector<float> tile_vertices_;
-
+    std::vector<Renderable2D> tile_vertices_;
     std::vector<std::unique_ptr<Texture2D>> textures_;
+    BatchRenderer renderer_;
 
-    Buffer vbo_;
-    Buffer uv_vbo_;
-    Buffer tex_id_vbo_;
-    IndexBuffer ibo_;
-    VertexArray vao_;
+    //std::random_device rd_;
+    //std::mt19937 gen_;
+    //std::uniform_real_distribution<float> dist_;
+
+    std::vector<float> phases_;
+    std::vector<float> frequencies_;
+    std::vector<float> original_zs_;
 };

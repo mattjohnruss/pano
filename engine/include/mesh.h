@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vertex.h>
+#include <mesh_vertex.h>
 #include <buffer.h>
 #include <index_buffer.h>
 #include <vertex_array.h>
@@ -61,7 +61,7 @@ private:
     VertexArray vao_;
 
     // storage for the vertices, indices and textures of the mesh
-    std::vector<Vertex> vertices_;
+    std::vector<MeshVertex> vertices_;
     std::vector<unsigned> indices_;
     std::vector<const MeshTexture*> textures_;
 

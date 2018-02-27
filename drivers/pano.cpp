@@ -106,6 +106,12 @@ private:
     double current_frame_;
     double previous_frame_;
 
+    double fps_delta_time_;
+    //double fps_current_frame_;
+    double fps_previous_frame_;
+
+    unsigned frame_count_;
+
     // Cube VAO handle
     GLuint cube_VAO_;
 
@@ -154,6 +160,7 @@ PanoWindow::PanoWindow(const unsigned width, const unsigned height, const std::s
     delta_time_(0.0f),
     current_frame_(0.0f),
     previous_frame_(0.0f),
+    frame_count_(0),
     lamp_shader_("data/shaders/lamp.vert", "data/shaders/lamp.frag"),
     model_shader_("data/shaders/model_loading.vert", "data/shaders/model_loading.frag"),
     //nanosuit_("data/models/nanosuit/nanosuit.obj"),
@@ -178,6 +185,16 @@ void PanoWindow::render()
     current_frame_  = glfwGetTime();
     delta_time_     = current_frame_ - previous_frame_;
     previous_frame_ = current_frame_;
+
+    fps_delta_time_ = current_frame_ - fps_previous_frame_;
+    ++frame_count_;
+
+    if(fps_delta_time_ >= 1.0)
+    {
+        std::cout << fps_delta_time_/frame_count_ << " (" << frame_count_ <<"fps)\n";
+        fps_previous_frame_ = current_frame_;
+        frame_count_ = 0;
+    }
 
     // perform movement
     do_movement();
@@ -294,9 +311,9 @@ void PanoWindow::render()
     glfwSwapBuffers(window_);
 
     // poll for events
-    //glfwPollEvents();
+    glfwPollEvents();
     //glfwWaitEvents();
-    glfwWaitEventsTimeout(static_cast<float>(1.0/60.0));
+    //glfwWaitEventsTimeout(static_cast<float>(1.0/60.0));
 }
 
 int main(int argc, char **argv)

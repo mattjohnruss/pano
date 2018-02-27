@@ -1,36 +1,33 @@
 #include <level.h>
 
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
+
 #include <string>
 #include <sstream>
 #include <fstream>
 #include <iostream>
 #include <random>
+#include <cmath>
+
+constexpr double pi = std::acos(-1);
 
 Level::Level(const std::string &level_path)
+    //: rd_(), gen_(rd_()), dist_(0.0, 2.0*pi)
 {
     for(unsigned i = 0; i < 10; ++i)
     {
-        std::string filename = "data/textures/plasma/plasma_" + std::to_string(i) + ".jpg";
-        //std::string filename = "data/textures/numbers/" + std::to_string(i) + ".jpg";
+        //std::string filename = "data/textures/plasma/plasma_" + std::to_string(i) + ".jpg";
+        std::string filename = "data/textures/numbers/" + std::to_string(i) + ".jpg";
         textures_.emplace_back(std::make_unique<Texture2D>(filename));
     }
 
     std::ifstream level_file(level_path);
     std::string line;
 
-    std::vector<GLfloat> vertex_data;
-    std::vector<GLuint> indices;
-    std::vector<GLfloat> tex_ids;
-
     std::random_device rd;
     std::mt19937 rng(rd());
-    std::uniform_int_distribution<unsigned> dist(0,9);
-
-    // there are 4 vertices per tile
-    constexpr unsigned vertices_per_tile = 4;
-
-    // hardcoded texture coords (for now)
-    constexpr float tex_coords[] = { 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f };
+    std::uniform_real_distribution<float> dist(0,2.0*pi);
 
     std::stringstream line_stream;
 
@@ -41,90 +38,63 @@ Level::Level(const std::string &level_path)
         float width, height;
         float r, g, b, a;
 
+        glm::vec3 position;
+        glm::vec2 size;
+        glm::vec4 colour;
+
         line_stream.str("");
         line_stream.clear();
 
         line_stream << line;
-        line_stream >> x >> y >> z
-                    >> width >> height
-                    >> r >> g >> b >> a;
+        line_stream >> position.x >> position.y >> position.z
+                    >> size.x >> size.y
+                    >> colour.r >> colour.g >> colour.b >> colour.a;
 
-        vertex_data.push_back(x - 0.5*width);
-        vertex_data.push_back(y - 0.5*height);
-        vertex_data.push_back(z);
-        vertex_data.push_back(r);
-        vertex_data.push_back(g);
-        vertex_data.push_back(b);
-        vertex_data.push_back(a);
-
-        vertex_data.push_back(x + 0.5*width);
-        vertex_data.push_back(y - 0.5*height);
-        vertex_data.push_back(z);
-        vertex_data.push_back(r);
-        vertex_data.push_back(g);
-        vertex_data.push_back(b);
-        vertex_data.push_back(a);
-
-        vertex_data.push_back(x + 0.5*width);
-        vertex_data.push_back(y + 0.5*height);
-        vertex_data.push_back(z);
-        vertex_data.push_back(r);
-        vertex_data.push_back(g);
-        vertex_data.push_back(b);
-        vertex_data.push_back(a);
-
-        vertex_data.push_back(x - 0.5*width);
-        vertex_data.push_back(y + 0.5*height);
-        vertex_data.push_back(z);
-        vertex_data.push_back(r);
-        vertex_data.push_back(g);
-        vertex_data.push_back(b);
-        vertex_data.push_back(a);
-
-        indices.push_back(n_tile*vertices_per_tile + 0);
-        indices.push_back(n_tile*vertices_per_tile + 1);
-        indices.push_back(n_tile*vertices_per_tile + 2);
-        indices.push_back(n_tile*vertices_per_tile + 2);
-        indices.push_back(n_tile*vertices_per_tile + 3);
-        indices.push_back(n_tile*vertices_per_tile + 0);
-
-        const GLfloat tex_id = (GLfloat)dist(rng);
-        tex_ids.push_back(tex_id);
-        tex_ids.push_back(tex_id);
-        tex_ids.push_back(tex_id);
-        tex_ids.push_back(tex_id);
+        tile_vertices_.emplace_back(position, size, colour, textures_[0].get()); 
     }
 
     level_file.close();
 
-    vbo_.set_data(&vertex_data[0], vertex_data.size());
-    uv_vbo_.set_data(&tex_coords[0], 4*2, n_tile);
-    tex_id_vbo_.set_data(&tex_ids[0], tex_ids.size());
-    ibo_.set_data(indices);
+    phases_.resize(n_tile);
+    frequencies_.resize(n_tile);
+    original_zs_.resize(n_tile);
 
-    //vao_.add_buffer(vbo_, { 0, 2, 1 }, { 3, 4, 2 }, { 0, 3, 7 }, 9);
-    vao_.add_buffer(vbo_, { 0, 2 }, { 3, 2 }, { 0, 3 }, 7);
-    vao_.add_buffer(uv_vbo_, 1, 2);
-    vao_.add_buffer(tex_id_vbo_, 3, 1);
-    vao_.add_index_buffer(ibo_);
+    for(unsigned i = 0; i < n_tile; ++i)
+    {
+        phases_[i] = dist(rng);
+        frequencies_[i] = dist(rng);
 
-    //vao_.bind();
+        original_zs_[i] = tile_vertices_[i].position.z;
+    }
 }
 
 void Level::draw(Shader &shader)
 {
     shader.use();
 
+    const unsigned n_tile = tile_vertices_.size();
+    const double t = glfwGetTime();
+    
+    for(unsigned i = 0; i < n_tile; ++i)
+    {
+        tile_vertices_[i].position.z = original_zs_[i] + 0.1*std::sqrt(frequencies_[i]*t + phases_[i]);
+    }
+
+    renderer_.begin();
+    renderer_.submit(tile_vertices_);
+    renderer_.end();
+    renderer_.flush();
+
     //textures_[0]->use(GL_TEXTURE0);
     //shader.set_int("u_texture", 0);
 
-    for(unsigned i = 0; i < 10; ++i)
-    {
-        textures_[i]->use(GL_TEXTURE0 + i);
-        shader.set_int(("u_texture[" + std::to_string(i) + "]").c_str(), i);
-    }
+    //static bool setup_done = false;
 
-    vao_.bind();
-    glDrawElements(GL_TRIANGLES, ibo_.size(), GL_UNSIGNED_INT, 0);
-    vao_.unbind();
+    //for(unsigned i = 0; i < 10; ++i)
+    //{
+        //textures_[i]->use(GL_TEXTURE0 + i);
+        //shader.set_int(("u_texture[" + std::to_string(i) + "]").c_str(), i);
+
+        //setup_done = true;
+    //}
 }

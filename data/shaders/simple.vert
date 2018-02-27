@@ -18,12 +18,8 @@ void main()
 {
     o_colour = a_colour;
     o_tex_coords = a_tex_coords;
-    //o_frag_pos = vec3(u_view_mat*u_model_mat*vec4(a_position, 1.0));
     o_frag_pos = u_view_mat*u_model_mat*vec4(a_position, 1.0);
-    //o_tex_id = int(a_tex_id - 0.5);
-    //o_tex_id = int(a_tex_id);
     o_tex_id = a_tex_id;
 
     gl_Position = u_proj_mat*u_view_mat*u_model_mat*vec4(a_position, 1.0f);
-    //gl_Position = u_model_mat*vec4(a_position, 1.0f);
 }

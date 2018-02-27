@@ -20,7 +20,7 @@ Mesh::Mesh(
     // loop over the vertices
     for(unsigned i = 0; i < mesh->mNumVertices; ++i)
     {
-        Vertex vertex;
+        MeshVertex vertex;
 
         // copy the positions from the mesh
         vertex.position.x = mesh->mVertices[i].x;
@@ -75,7 +75,7 @@ Mesh::Mesh(
     // setup and populate the gl buffers with the mesh data
     vbo_.set_data(vertices_);
     ebo_.set_data(indices_);
-    vao_.add_buffer(vbo_, {VertexDataType::POSITION, VertexDataType::NORMAL, VertexDataType::TEX_COORDS}, {0,1,2});
+    vao_.add_buffer(vbo_, {MeshVertexDataType::POSITION, MeshVertexDataType::NORMAL, MeshVertexDataType::TEX_COORDS}, {0,1,2});
     vao_.add_index_buffer(ebo_);
 }
 

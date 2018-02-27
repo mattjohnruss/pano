@@ -1,8 +1,11 @@
 #include <index_buffer.h>
 
-IndexBuffer::IndexBuffer()
+IndexBuffer::IndexBuffer(const bool generate_buffer)
 {
-    glGenBuffers(1, &id_);
+    if(generate_buffer)
+    {
+        glGenBuffers(1, &id_);
+    }
 }
 
 IndexBuffer::IndexBuffer(const std::vector<GLuint> &indices)

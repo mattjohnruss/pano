@@ -24,6 +24,8 @@ VertexArray::~VertexArray()
     //}
 }
 
+// TODO make the various add_buffer functions have more consistent arguments -
+// order, taking actual size in bytes rather than number of floats etc
 void VertexArray::add_buffer(const Buffer &buffer,
                              const GLuint index,
                              const GLint size) const
@@ -44,8 +46,8 @@ void VertexArray::add_buffer(const Buffer &buffer,
 void VertexArray::add_buffer(const Buffer &buffer,
                              const std::vector<GLuint> &indices,
                              const std::vector<GLint> &sizes,
-                             const std::vector<int> &offsets,
-                             const unsigned stride) const
+                             const std::vector<std::size_t> &offsets,
+                             const std::size_t stride) const
 {
     // bind the vertex array
     bind();
@@ -66,15 +68,16 @@ void VertexArray::add_buffer(const Buffer &buffer,
     for(unsigned i = 0; i < n_size; ++i)
     {
         GLuint index = indices[i];
-        GLint size = sizes[i];
-        unsigned offset = offsets[i];
+        GLint size = sizes[i]/sizeof(GLfloat);
+        std::size_t offset = offsets[i];
 
         // enable the appropriate vertex attribute and pass the data offset etc
         // into the array
         glEnableVertexAttribArray(index);
         glVertexAttribPointer(
                     index, size, GL_FLOAT, GL_FALSE,
-                    stride*sizeof(GLfloat), (void*)(offset*sizeof(GLfloat)));
+                    //stride*sizeof(GLfloat), (void*)(offset*sizeof(GLfloat)));
+                    stride, (const void*)offset);
     }
 
     // unbind the buffer
@@ -85,7 +88,7 @@ void VertexArray::add_buffer(const Buffer &buffer,
 }
 
 void VertexArray::add_buffer(const Buffer &buffer,
-                             const std::vector<VertexDataType> &data_types) const
+                             const std::vector<MeshVertexDataType> &data_types) const
 {
     std::vector<GLuint> indices(data_types.size());
 
@@ -98,7 +101,7 @@ void VertexArray::add_buffer(const Buffer &buffer,
 }
 
 void VertexArray::add_buffer(const Buffer &buffer,
-                             const std::vector<VertexDataType> &data_types,
+                             const std::vector<MeshVertexDataType> &data_types,
                              const std::vector<GLuint> &indices) const
 {
     // bind the vertex array
@@ -117,38 +120,38 @@ void VertexArray::add_buffer(const Buffer &buffer,
     for(unsigned i = 0; i < n_index; ++i)
     {
         GLuint index = indices[i];
-        VertexDataType data_type = data_types[i];
+        MeshVertexDataType data_type = data_types[i];
 
         // enable the appropriate vertex attribute and pass the data offset etc
         // into the array
         switch(data_type)
         {
-            case VertexDataType::POSITION:
+            case MeshVertexDataType::POSITION:
                 glEnableVertexAttribArray(index);
                 glVertexAttribPointer(
-                        index, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                        (void*)offsetof(Vertex, position));
+                        index, 3, GL_FLOAT, GL_FALSE, sizeof(MeshVertex),
+                        (void*)offsetof(MeshVertex, position));
                 break;
 
-            case VertexDataType::NORMAL:
+            case MeshVertexDataType::NORMAL:
                 glEnableVertexAttribArray(index);
                 glVertexAttribPointer(
-                        index, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                        (void*)offsetof(Vertex, normal));
+                        index, 3, GL_FLOAT, GL_FALSE, sizeof(MeshVertex),
+                        (void*)offsetof(MeshVertex, normal));
                 break;
 
-            case VertexDataType::TEX_COORDS:
+            case MeshVertexDataType::TEX_COORDS:
                 glEnableVertexAttribArray(index);
                 glVertexAttribPointer(
-                        index, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                        (void*)offsetof(Vertex, tex_coords));
+                        index, 2, GL_FLOAT, GL_FALSE, sizeof(MeshVertex),
+                        (void*)offsetof(MeshVertex, tex_coords));
                 break;
 
-            case VertexDataType::COLOUR:
+            case MeshVertexDataType::COLOUR:
                 glEnableVertexAttribArray(index);
                 glVertexAttribPointer(
-                        index, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                        (void*)offsetof(Vertex, colour));
+                        index, 4, GL_FLOAT, GL_FALSE, sizeof(MeshVertex),
+                        (void*)offsetof(MeshVertex, colour));
                 break;
         }
     }

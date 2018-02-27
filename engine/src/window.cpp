@@ -46,7 +46,7 @@ Window::Window(
     glfwSetScrollCallback(window_, sd_scroll_callback);
 
     // disable vsync (for performance analysis)
-    //glfwSwapInterval(0);
+    glfwSwapInterval(0);
 
     // enable mouse capturing
     //glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);

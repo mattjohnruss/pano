@@ -1,8 +1,16 @@
 #include <buffer.h>
 
-Buffer::Buffer()
+Buffer::Buffer(const bool generate_buffer)
 {
-    glGenBuffers(1, &id_);
+    if(generate_buffer)
+    {
+       glGenBuffers(1, &id_);
+    }
+}
+
+Buffer::Buffer(const GLuint id)
+    : id_(id)
+{
 }
 
 Buffer::Buffer(const GLfloat *data,
@@ -12,7 +20,7 @@ Buffer::Buffer(const GLfloat *data,
     set_data(data, n_element);
 }
 
-Buffer::Buffer(const std::vector<Vertex> &vertices)
+Buffer::Buffer(const std::vector<MeshVertex> &vertices)
 {
     glGenBuffers(1, &id_);
     set_data(vertices);
@@ -58,11 +66,11 @@ void Buffer::set_data(const GLfloat *data,
     }
 }
 
-void Buffer::set_data(const std::vector<Vertex> &vertices)
+void Buffer::set_data(const std::vector<MeshVertex> &vertices)
 {
     bind();
     glBufferData(GL_ARRAY_BUFFER,
-                 vertices.size()*sizeof(Vertex),
+                 vertices.size()*sizeof(MeshVertex),
                  &vertices[0],
                  GL_STATIC_DRAW);
     unbind();
@@ -76,4 +84,19 @@ void Buffer::bind() const
 void Buffer::unbind() const
 {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void Buffer::unmap() const
+{
+    glUnmapBuffer(GL_ARRAY_BUFFER);
+}
+
+GLuint& Buffer::id()
+{
+    return id_;
+}
+
+const GLuint& Buffer::id() const
+{
+    return id_;
 }
