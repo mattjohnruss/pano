@@ -12,3 +12,7 @@ target_include_directories(engine PUBLIC include
                                          ${pano_SOURCE_DIR}/vendor/stb)
 
 target_link_libraries(engine ${OPENGL_gl_LIBRARY} glm glfw dl assimp)
+
+if(ipo_supported)
+    set_property(TARGET engine PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+endif()
