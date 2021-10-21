@@ -38,6 +38,7 @@ done
 shift $(($OPTIND - 1))
 
 # go to the build directory
+mkdir -p build-"$build_type"
 pushd build-"$build_type"
 
 # run cmake if requested
