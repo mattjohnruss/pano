@@ -98,6 +98,11 @@ void Window::scroll_callback(double x_offset, double y_offset)
     // do nothing by default
 }
 
+void Window::update_state()
+{
+    // do nothing by default
+}
+
 void Window::render()
 {
     // do nothing by default
@@ -105,9 +110,21 @@ void Window::render()
 
 void Window::run()
 {
+    constexpr unsigned target_ups = 60;
+    constexpr double seconds_per_update = 1.0/static_cast<double>(target_ups);
+
+    double previous_time = glfwGetTime();
+    double delta = 0.0;
+
+    double timer = glfwGetTime();
+
+    unsigned frames = 0;
+    unsigned updates = 0;
+
     // loop until the window is closed
     while(!glfwWindowShouldClose(window_))
     {
+        // check for errors
 #ifdef PANO_DEBUG
         GLenum gl_error;
         while((gl_error = glGetError()) != GL_NO_ERROR)
@@ -115,13 +132,32 @@ void Window::run()
             std::cerr << "Window::run - GL error(" << gl_error << ")\n";
         }
 #endif
-        // eventually this may call separate functions such as:
-        // process_input();
-        // update_state();
-        // etc
+        // TODO separate input processing into its own function
+
+        double current_time = glfwGetTime();
+        delta += (current_time - previous_time)/seconds_per_update;
+        previous_time = current_time;
+
+        while(delta >= 1.0)
+        {
+            // update the game state
+            update_state();
+            ++updates;
+            delta -= 1.0;
+        }
 
         // for now just do everything in the render function
         render();
+        ++frames;
+
+        if((glfwGetTime() - timer) > 1.0)
+        {
+            timer += 1.0;
+            std::cout << "updates: " << updates << ", frames: " << frames << '\n';
+
+            updates = 0;
+            frames = 0;
+        }
     }
 }
 

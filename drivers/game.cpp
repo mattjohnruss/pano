@@ -13,6 +13,7 @@
 
 #include <iostream>
 #include <chrono>
+#include <thread>
 
 //#ifdef PANO_PROFILE TODO or something
 //#include <gperftools/profiler.h>
@@ -26,7 +27,7 @@ public:
           camera_({ 0.5f, 0.5f, 1.5f }, { 0.0f, 1.0f, 0.0f }),
           shader_("data/shaders/simple.vert", "data/shaders/simple.frag"),
           level_(level_path),
-          previous_time(),
+          //previous_time(),
           frame_count(0)
     {
         // define the viewport dimensions
@@ -54,18 +55,25 @@ public:
         }
     }
 
+    void update_state() override
+    {
+        //std::cout << "update_state()\n";
+        using namespace std::chrono_literals;
+        std::this_thread::sleep_for(12ms);
+    }
+
     void render() override
     {
-        double current_time = glfwGetTime();
-        double delta_time = current_time - previous_time;
-        ++frame_count;
+        //double current_time = glfwGetTime();
+        //double delta_time = current_time - previous_time;
+        //++frame_count;
 
-        if(delta_time >= 1.0)
-        {
-            std::cout << delta_time/frame_count << " (" << frame_count << "fps)\n";
-            previous_time = current_time;
-            frame_count = 0;
-        }
+        //if(delta_time >= 1.0)
+        //{
+            //std::cout << delta_time/frame_count << " (" << frame_count << "fps)\n";
+            //previous_time = current_time;
+            //frame_count = 0;
+        //}
 
         // clear the background
         glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
@@ -125,7 +133,7 @@ private:
     //IndexBuffer ibo_;
     //VertexArray vao_;
 
-    double previous_time;
+    //double previous_time;
     unsigned frame_count;
 };
 

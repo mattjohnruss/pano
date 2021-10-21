@@ -10,7 +10,7 @@
 #include <random>
 #include <cmath>
 
-constexpr double pi = std::acos(-1);
+const double pi = std::acos(-1);
 
 Level::Level(const std::string &level_path)
     //: rd_(), gen_(rd_()), dist_(0.0, 2.0*pi)
@@ -25,9 +25,9 @@ Level::Level(const std::string &level_path)
     std::ifstream level_file(level_path);
     std::string line;
 
-    std::random_device rd;
-    std::mt19937 rng(rd());
-    std::uniform_real_distribution<float> dist(0,2.0*pi);
+    //std::random_device rd;
+    //std::mt19937 rng(rd());
+    //std::uniform_real_distribution<float> dist(0,2.0*pi);
 
     std::stringstream line_stream;
 
@@ -55,17 +55,17 @@ Level::Level(const std::string &level_path)
 
     level_file.close();
 
-    phases_.resize(n_tile);
-    frequencies_.resize(n_tile);
-    original_zs_.resize(n_tile);
+    //phases_.resize(n_tile);
+    //frequencies_.resize(n_tile);
+    //original_zs_.resize(n_tile);
 
-    for(unsigned i = 0; i < n_tile; ++i)
-    {
-        phases_[i] = dist(rng);
-        frequencies_[i] = dist(rng);
+    //for(unsigned i = 0; i < n_tile; ++i)
+    //{
+        //phases_[i] = dist(rng);
+        //frequencies_[i] = dist(rng);
 
-        original_zs_[i] = tile_vertices_[i].position.z;
-    }
+        //original_zs_[i] = tile_vertices_[i].position.z;
+    //}
 }
 
 void Level::draw(Shader &shader)
@@ -73,12 +73,12 @@ void Level::draw(Shader &shader)
     shader.use();
 
     const unsigned n_tile = tile_vertices_.size();
-    const double t = glfwGetTime();
+    //const double t = glfwGetTime();
     
-    for(unsigned i = 0; i < n_tile; ++i)
-    {
-        tile_vertices_[i].position.z = original_zs_[i] + 0.1*std::sqrt(frequencies_[i]*t + phases_[i]);
-    }
+    //for(unsigned i = 0; i < n_tile; ++i)
+    //{
+        //tile_vertices_[i].position.z = original_zs_[i] + 0.1*std::sqrt(frequencies_[i]*t + phases_[i]);
+    //}
 
     renderer_.begin();
     renderer_.submit(tile_vertices_);

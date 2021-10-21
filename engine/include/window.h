@@ -31,6 +31,9 @@ public:
     virtual void cursor_position_callback(double x_pos, double y_pos);
     virtual void scroll_callback(double x_offset, double y_offset);
 
+    // state update function
+    virtual void update_state();
+
     // render function
     virtual void render();
 

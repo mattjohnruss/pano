@@ -36,7 +36,7 @@ private:
     //std::mt19937 gen_;
     //std::uniform_real_distribution<float> dist_;
 
-    std::vector<float> phases_;
-    std::vector<float> frequencies_;
-    std::vector<float> original_zs_;
+    //std::vector<float> phases_;
+    //std::vector<float> frequencies_;
+    //std::vector<float> original_zs_;
 };

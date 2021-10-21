@@ -186,15 +186,15 @@ void PanoWindow::render()
     delta_time_     = current_frame_ - previous_frame_;
     previous_frame_ = current_frame_;
 
-    fps_delta_time_ = current_frame_ - fps_previous_frame_;
-    ++frame_count_;
+    //fps_delta_time_ = current_frame_ - fps_previous_frame_;
+    //++frame_count_;
 
-    if(fps_delta_time_ >= 1.0)
-    {
-        std::cout << fps_delta_time_/frame_count_ << " (" << frame_count_ <<"fps)\n";
-        fps_previous_frame_ = current_frame_;
-        frame_count_ = 0;
-    }
+    //if(fps_delta_time_ >= 1.0)
+    //{
+        //std::cout << fps_delta_time_/frame_count_ << " (" << frame_count_ <<"fps)\n";
+        //fps_previous_frame_ = current_frame_;
+        //frame_count_ = 0;
+    //}
 
     // perform movement
     do_movement();
